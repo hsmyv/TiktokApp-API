@@ -29,7 +29,7 @@ class PostController extends Controller
 
             $post->user_id = auth()->user()->id;
             $post->text = $request->input('text');
-
+            $post->save();
             return response()->json(['sucess' => 'OK'], 200);
 
         } catch (\Exception $e) {

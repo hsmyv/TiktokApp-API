@@ -1,48 +1,48 @@
 <?php
+
 namespace App\Services;
 
 use Image;
 
-class FileService{
-
+class FileService
+{
     public function updateImage($model, $request)
     {
-         $image = Image::make($request->file('image'));
+        $image = Image::make($request->file('image'));
 
-            if(!empty($model->image)){
-                $currentImage = public_path() . $model->image;
+        if (!empty($model->image)) {
+            $currentImage = public_path() . $model->image;
 
-                if(file_exists($currentImage)&& $currentImage != public_path() . '/user-placeholder.png'){
-                    unlink($currentImage);
-                }
+            if (file_exists($currentImage) && $currentImage != public_path() . '/user-placeholder.png') {
+                unlink($currentImage);
             }
+        }
 
-            $file = $request->file('image');
-            $extension = $file->getClietOriginalExtension();
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
 
-            $image->crop(
-                $request->width,
-                $request->height,
-                $request->left,
-                $request->top,
+        $image->crop(
+            $request->width,
+            $request->height,
+            $request->left,
+            $request->top
+        );
 
-            );
+        $name = time() . '.' . $extension;
+        $image->save(public_path() . '/files/' . $name);
+        $model->image = '/files/' . $name;
 
-            $name = time(). '.' . $extension;
-            $image->save(public_path(). '/files/' . $name);
-
-            return $model;
+        return $model;
     }
 
     public function addVideo($model, $request)
     {
         $video = $request->file('video');
-        $extension = $video->getClietOriginalExtension();
+        $extension = $video->getClientOriginalExtension();
         $name = time() . '.' . $extension;
-        $video->move(public_path(). '/files/', $name);
+        $video->move(public_path() . '/files/', $name);
         $model->video = '/files/' . $name;
 
         return $model;
     }
-
 }

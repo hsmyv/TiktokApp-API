@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function loggedInUser()
     {
-         try {
+        try {
             $user = User::where('id', auth()->user()->id)->get();
             return response()->json(new UserCollection($user), 200);
         } catch (\Exception $e) {
@@ -33,14 +33,15 @@ class UserController extends Controller
     public function updateUserImage(Request $request)
     {
         $request->validate(['image' => 'required|mimes:png,jpg,jpeg']);
-        if($request->height === '' || $request->width === '' || $request->top === '' || $request->left === '')
-            return response()->json(['error' => 'The dimension are incomplete'], 400);
+        if ($request->height === '' || $request->width === '' || $request->top === '' || $request->left === '') {
+            return response()->json(['error' => 'The dimensions are incomplete'], 400);
+        }
+
         try {
             $user = (new FileService)->updateImage(auth()->user(), $request);
             $user->save();
 
-            return response()->json(['sucess' => 'OK'], 200);
-
+            return response()->json(['success' => 'OK'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -71,7 +72,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => 'OK',
                 'user'    => $user,
-            ],200);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -99,7 +100,6 @@ class UserController extends Controller
             $user->bio  = $request->input('bio');
             $user->save();
             return response()->json(['success' => 'OK'], 200);
-
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
